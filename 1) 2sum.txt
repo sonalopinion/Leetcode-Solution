@@ -16,7 +16,7 @@ Input: nums = [3,3], target = 6
 Output: [0,1]
 
 
---------------------------------solution o(n)2
+--------------------------------solution o(n)2   (Best for me)
 
 public class Solution {
     public int[] TwoSum(int[] nums, int target) {
