@@ -1,0 +1,131 @@
+
+5. Longest Palindromic Substring
+
+
+------------------------------------------------
+
+Example 1:
+
+Input: s = "babad"
+Output: "bab"
+Explanation: "aba" is also a valid answer.
+Example 2:
+
+Input: s = "cbbd"
+Output: "bb"
+
+-------------------------------------------------------using DP and save memory
+
+public class Solution {
+    public string LongestPalindrome(string s) {
+
+        int n = s.Length;
+
+        if (n <= 1)
+            return s;
+
+        bool[,] dp = new bool[n, n];
+
+        int start = 0;
+        int maxLength = 1;
+
+
+        // length of substring
+        for (int len = 1; len <= n; len++) {
+
+            for (int i = 0; i <= n - len; i++) {
+
+                int j = i + len - 1;
+
+
+                // check palindrome
+                if (len == 1) {
+                    dp[i,j] = true;
+                }
+                else if (len == 2) {
+                    dp[i,j] = (s[i] == s[j]);
+                }
+                else {
+                    dp[i,j] = (s[i] == s[j]) && dp[i+1,j-1];
+                }
+
+
+                // update answer
+                if (dp[i,j] && len > maxLength) {
+                    start = i;
+                    maxLength = len;
+                }
+            }
+        }
+
+
+        return s.Substring(start, maxLength);
+    }
+}
+
+
+----------------------------------Expand Around Center.
+
+public class Solution {
+    public string LongestPalindrome(string s) {
+        if (s.Length <= 1)
+            return s;
+
+        int start = 0;
+        int maxLength = 1;
+
+        for (int i = 0; i < s.Length; i++) {
+
+            // Odd length palindrome
+            Expand(s, i, i, ref start, ref maxLength);
+
+            // Even length palindrome
+            Expand(s, i, i + 1, ref start, ref maxLength);
+        }
+
+        return s.Substring(start, maxLength);
+    }
+
+
+    private void Expand(string s, int left, int right, ref int start, ref int maxLength) {
+
+        while (left >= 0 && right < s.Length && s[left] == s[right]) {
+
+            int length = right - left + 1;
+
+            if (length > maxLength) {
+                start = left;
+                maxLength = length;
+            }
+
+            left--;
+            right++;
+        }
+    }
+}
+
+
+
+| i | Center | Expand | Palindrome | Length | Max |
+| - | ------ | ------ | ---------- | ------ | --- |
+| 0 | b      | b      | b          | 1      | b   |
+| 1 | a      | a      | a          | 1      | b   |
+| 1 | a      | b-a-b  | bab        | 3      | bab |
+| 2 | b      | b      | b          | 1      | bab |
+| 2 | b      | a-b-a  | aba        | 3      | bab |
+| 3 | a      | a      | a          | 1      | bab |
+| 4 | d      | d      | d          | 1      | bab |
+
+
+Complexity
+
+Time: O(n²)
+Because each center can expand up to n times.
+
+Space: O(1)
+Only variables are used.
+
+
+DP is easier to understand, but Expand Around Center is usually preferred in interviews because it saves memory.
+
+
